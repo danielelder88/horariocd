@@ -7,7 +7,6 @@
   <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 
   <!-- HTML2PDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -21,29 +20,22 @@
     .donoderua { border-left: 10px solid #ffca28; background-color: #fff9c4; }
     .checkout { border-left: 10px solid #66bb6a; background-color: #c8e6c9; }
     .empilhadores { border-left: 10px solid #29b6f6; background-color: #b3e5fc; }
-    .funcionario input { padding: 6px; border-radius: 4px; border: 1px solid #ccc; flex: 1; text-transform: uppercase; font-family: 'Arial Black'; }
     .funcionario { display: flex; align-items: center; margin-bottom: 8px; }
-    .funcionario button { margin-left: 8px; background: #e53935; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; }
-    .data-horario input { margin: 5px 10px 10px 0; padding: 8px; border-radius: 5px; border: 1px solid #ccc; text-transform: uppercase; }
+    .funcionario input { padding: 6px; border-radius: 4px; border: 1px solid #ccc; flex: 1; }
+    .funcionario button { margin-left: 5px; background: #ccc; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; }
+    .data-horario input { margin: 5px 10px 10px 0; padding: 8px; border-radius: 5px; border: 1px solid #ccc; }
     #controles { margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap; }
-    #controles input, #controles select { padding: 8px; border-radius: 5px; border: 1px solid #ccc; text-transform: uppercase; }
+    #controles input, #controles select { padding: 8px; border-radius: 5px; border: 1px solid #ccc; }
     #controles button { background: #0288d1; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; }
     #logoPDF { display: none; }
+    .turno-empilhador { font-size: 10px; margin-left: 5px; color: #555; }
   </style>
 </head>
 <body>
 
-<!-- LOGO oculta para ser inserida no PDF -->
 <img id="logoPDF" src="LOGO_DURÃES_VETORIZADA.png" alt="LOGO DURÃES" width="200">
 
 <h1>TABELA DE HORÁRIOS</h1>
-
-<div id="login">
-  <input type="email" id="email" placeholder="EMAIL">
-  <input type="password" id="senha" placeholder="SENHA">
-  <button onclick="login()">ENTRAR</button>
-  <button onclick="logout()" style="display:none;" id="logoutBtn">SAIR</button>
-</div>
 
 <div id="controles">
   <input type="text" id="nomeNovo" placeholder="NOME">
@@ -61,13 +53,13 @@
   <button onclick="salvarDados()">SALVAR</button>
 </div>
 
-<div class="turno separador" id="separador1"><h2>SEPARADOR - 1º TURNO</h2><div class="data-horario"><input placeholder="DATA" class="dataInput"><input placeholder="HORÁRIO" class="horarioInput"></div></div>
-<div class="turno separador" id="separador2"><h2>SEPARADOR - 2º TURNO</h2><div class="data-horario"><input placeholder="DATA" class="dataInput"><input placeholder="HORÁRIO" class="horarioInput"></div></div>
-<div class="turno donoderua" id="donoderua1"><h2>DONO DE RUA - 1º TURNO</h2><div class="data-horario"><input placeholder="DATA" class="dataInput"><input placeholder="HORÁRIO" class="horarioInput"></div></div>
-<div class="turno donoderua" id="donoderua2"><h2>DONO DE RUA - 2º TURNO</h2><div class="data-horario"><input placeholder="DATA" class="dataInput"><input placeholder="HORÁRIO" class="horarioInput"></div></div>
-<div class="turno checkout" id="checkout1"><h2>CHECKOUT - 1º TURNO</h2><div class="data-horario"><input placeholder="DATA" class="dataInput"><input placeholder="HORÁRIO" class="horarioInput"></div></div>
-<div class="turno checkout" id="checkout2"><h2>CHECKOUT - 2º TURNO</h2><div class="data-horario"><input placeholder="DATA" class="dataInput"><input placeholder="HORÁRIO" class="horarioInput"></div></div>
-<div class="turno empilhadores" id="empilhadores"><h2>EMPILHADORES</h2><div class="data-horario"><input placeholder="DATA" class="dataInput"><input placeholder="HORÁRIO" class="horarioInput"></div></div>
+<div class="turno separador" id="separador1"><h2>SEPARADOR - 1º TURNO</h2><div class="data-horario"><input placeholder="DATA"><input placeholder="HORÁRIO"></div></div>
+<div class="turno separador" id="separador2"><h2>SEPARADOR - 2º TURNO</h2><div class="data-horario"><input placeholder="DATA"><input placeholder="HORÁRIO"></div></div>
+<div class="turno donoderua" id="donoderua1"><h2>DONO DE RUA - 1º TURNO</h2><div class="data-horario"><input placeholder="DATA"><input placeholder="HORÁRIO"></div></div>
+<div class="turno donoderua" id="donoderua2"><h2>DONO DE RUA - 2º TURNO</h2><div class="data-horario"><input placeholder="DATA"><input placeholder="HORÁRIO"></div></div>
+<div class="turno checkout" id="checkout1"><h2>CHECKOUT - 1º TURNO</h2><div class="data-horario"><input placeholder="DATA"><input placeholder="HORÁRIO"></div></div>
+<div class="turno checkout" id="checkout2"><h2>CHECKOUT - 2º TURNO</h2><div class="data-horario"><input placeholder="DATA"><input placeholder="HORÁRIO"></div></div>
+<div class="turno empilhadores" id="empilhadores"><h2>EMPILHADORES</h2><div class="data-horario"><input placeholder="DATA"><input placeholder="HORÁRIO"></div></div>
 
 <script>
   const firebaseConfig = {
@@ -80,37 +72,83 @@
   };
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
-  const auth = firebase.auth();
 
-  function criarFuncionario(nome, setor) {
+  function criarFuncionario(nome, setor, turno=1) {
     const div = document.createElement('div');
     div.className = 'funcionario';
     const input = document.createElement('input');
     input.value = nome;
-    const btn = document.createElement('button');
-    btn.textContent = 'X';
-    btn.onclick = () => div.remove();
+
+    const turnoSpan = document.createElement('span');
+    turnoSpan.className = 'turno-empilhador';
+    turnoSpan.textContent = setor === 'empilhadores' ? `(${turno}º TURNO)` : '';
+
+    const btnTroca = document.createElement('button');
+    btnTroca.textContent = '⇄';
+    btnTroca.onclick = () => moverFuncionario(div, setor, turnoSpan);
+
+    const btnExcluir = document.createElement('button');
+    btnExcluir.textContent = 'X';
+    btnExcluir.onclick = () => {
+      if (confirm('Tem certeza que deseja excluir este funcionário?')) {
+        div.remove();
+      }
+    };
+
     div.appendChild(input);
-    div.appendChild(btn);
+    div.appendChild(turnoSpan);
+    div.appendChild(btnTroca);
+    div.appendChild(btnExcluir);
     document.getElementById(setor).appendChild(div);
+
+    ordenarFuncionarios(setor);
   }
 
   function adicionarFuncionario() {
     const nome = document.getElementById('nomeNovo').value.trim();
     const setor = document.getElementById('setorNovo').value;
-    if (nome) { criarFuncionario(nome, setor); document.getElementById('nomeNovo').value = ''; }
+    if (nome) { 
+      criarFuncionario(nome, setor);
+      document.getElementById('nomeNovo').value = ''; 
+    }
+  }
+
+  function moverFuncionario(funcDiv, setor, turnoSpan) {
+    if (setor === 'empilhadores') {
+      let turnoAtual = parseInt(turnoSpan.textContent[1]);
+      turnoAtual = turnoAtual % 3 + 1;
+      turnoSpan.textContent = `(${turnoAtual}º TURNO)`;
+    } else {
+      const parent = funcDiv.parentElement.id;
+      let proximo = '';
+      if (parent.includes('separador')) {
+        proximo = parent === 'separador1' ? 'separador2' : 'separador1';
+      } else if (parent.includes('donoderua')) {
+        proximo = parent === 'donoderua1' ? 'donoderua2' : 'donoderua1';
+      } else if (parent.includes('checkout')) {
+        proximo = parent === 'checkout1' ? 'checkout2' : 'checkout1';
+      }
+      document.getElementById(proximo).appendChild(funcDiv);
+      ordenarFuncionarios(proximo);
+    }
+    if (setor === 'empilhadores') ordenarFuncionarios(setor);
+  }
+
+  function ordenarFuncionarios(setor) {
+    const container = document.getElementById(setor);
+    const funcionarios = Array.from(container.querySelectorAll('.funcionario'));
+    funcionarios.sort((a, b) => a.querySelector('input').value.localeCompare(b.querySelector('input').value));
+    funcionarios.forEach(f => container.appendChild(f));
   }
 
   function gerarPDF() {
     const clone = document.body.cloneNode(true);
-
-    // Remove login e cadastro
-    const loginDiv = clone.querySelector('#login');
-    if (loginDiv) loginDiv.remove();
     const controlesDiv = clone.querySelector('#controles');
     if (controlesDiv) controlesDiv.remove();
 
-    // Insere logo no topo
+    clone.querySelectorAll('.funcionario button').forEach(btn => btn.remove());
+    clone.querySelectorAll('.turno-empilhador').forEach(span => span.remove());
+
     const logo = document.getElementById('logoPDF').cloneNode();
     logo.style.display = 'block';
     clone.insertBefore(logo, clone.firstChild);
@@ -126,17 +164,18 @@
   }
 
   function salvarDados() {
-    if (!auth.currentUser) {
-      alert('FAÇA LOGIN PARA SALVAR');
-      return;
-    }
     const dados = {};
     document.querySelectorAll('.turno').forEach(turno => {
       const id = turno.id;
-      const data = turno.querySelector('.dataInput').value;
-      const horario = turno.querySelector('.horarioInput').value;
+      const data = turno.querySelector('.data-horario input').value;
+      const horario = turno.querySelector('.data-horario input:nth-child(2)').value;
       dados[id] = { data, horario, funcionarios: [] };
-      turno.querySelectorAll('.funcionario input').forEach(f => dados[id].funcionarios.push(f.value));
+      turno.querySelectorAll('.funcionario').forEach(f => {
+        const nome = f.querySelector('input').value;
+        const turnoEmp = f.querySelector('.turno-empilhador');
+        const turnoTexto = turnoEmp ? turnoEmp.textContent : '';
+        dados[id].funcionarios.push(nome + turnoTexto);
+      });
     });
     db.collection("tabela").doc("horarios").set(dados).then(() => alert("DADOS SALVOS NO FIREBASE"));
   }
@@ -147,29 +186,15 @@
         const dados = doc.data();
         for (let setor in dados) {
           const div = document.getElementById(setor);
-          div.querySelector('.dataInput').value = dados[setor].data;
-          div.querySelector('.horarioInput').value = dados[setor].horario;
-          dados[setor].funcionarios.forEach(nome => criarFuncionario(nome, setor));
+          div.querySelector('.data-horario input').value = dados[setor].data;
+          div.querySelector('.data-horario input:nth-child(2)').value = dados[setor].horario;
+          dados[setor].funcionarios.forEach(nomeTurno => {
+            const [nome, turnoTexto] = nomeTurno.split('(');
+            const turnoNum = turnoTexto ? parseInt(turnoTexto[0]) : 1;
+            criarFuncionario(nome.trim(), setor, setor === 'empilhadores' ? turnoNum : 1);
+          });
         }
       }
-    });
-  }
-
-  function login() {
-    const email = document.getElementById('email').value;
-    const senha = document.getElementById('senha').value;
-    auth.signInWithEmailAndPassword(email, senha)
-      .then(() => {
-        alert('LOGIN EFETUADO');
-        document.getElementById('logoutBtn').style.display = 'inline';
-      })
-      .catch(e => alert('ERRO: ' + e.message));
-  }
-
-  function logout() {
-    auth.signOut().then(() => {
-      alert('DESLOGADO');
-      document.getElementById('logoutBtn').style.display = 'none';
     });
   }
 </script>
