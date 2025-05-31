@@ -38,7 +38,20 @@
 <h1>TABELA DE HORÁRIOS</h1>
 
 <div id="controles">
+  
+<div style="display: flex; align-items: center; gap: 10px; position: relative;">
   <input type="text" id="nomeNovo" placeholder="NOME">
+  <button type="button" id="btnEmoji" style="background: none; border: none; cursor: pointer; font-size: 18px;">➕ Emojis</button>
+  <div id="emojiContainer" style="display: none; position: absolute; top: 100%; left: 0; background: #fff; border: 1px solid #ccc; border-radius: 5px; padding: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 10; max-width: 200px; flex-wrap: wrap; gap: 5px;">
+    <button type="button">😀</button><button type="button">😁</button><button type="button">😂</button><button type="button">🤣</button><button type="button">😎</button>
+    <button type="button">😍</button><button type="button">🥰</button><button type="button">😡</button><button type="button">😢</button><button type="button">😱</button>
+    <button type="button">🤯</button><button type="button">🙏</button><button type="button">👊</button><button type="button">👍</button><button type="button">👎</button>
+    <button type="button">✌️</button><button type="button">🤟</button><button type="button">👏</button><button type="button">💪</button><button type="button">🚀</button>
+    <button type="button">⚡</button><button type="button">🔥</button><button type="button">🌟</button><button type="button">🎯</button><button type="button">🏆</button>
+    <button type="button">🛠️</button><button type="button">🎨</button><button type="button">💼</button><button type="button">🏅</button><button type="button">🎁</button>
+  </div>
+</div>
+
   <select id="setorNovo">
     <option value="separador1">SEPARADOR 1º TURNO</option>
     <option value="separador2">SEPARADOR 2º TURNO</option>
@@ -150,7 +163,22 @@
     clone.querySelector('#controles').remove();
     clone.querySelectorAll('.funcionario button').forEach(btn => btn.remove());
     clone.querySelectorAll('.turno-empilhador').forEach(span => span.remove());
-    const logo = document.getElementById('logoPDF').cloneNode();
+    
+    
+
+clone.querySelectorAll('.input-horario-alt').forEach(input => {
+  if (input.value.trim() === '') {
+    input.remove();
+  } else {
+    const nomeInput = input.parentNode.querySelector('input');
+    const span = document.createElement('span');
+    span.innerHTML = '<span style="display: inline-block; margin-left: 5px; padding: 2px 4px; border: 1px solid red; background: #ffe5e5; color: red; font-weight: bold;">' 
+      + input.value.trim() + '</span>';
+    nomeInput.parentNode.insertBefore(span, nomeInput.nextSibling);
+    input.remove();
+  }
+});
+const logo = document.getElementById('logoPDF').cloneNode();
     logo.style.display = 'block';
     clone.insertBefore(logo, clone.firstChild);
     html2pdf().set({ margin: 5, filename: 'tabela_horarios_' + new Date().toISOString().slice(0, 10) + '.pdf', image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } }).from(clone).save();
@@ -215,5 +243,26 @@
   }
 </script>
 
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const btnEmoji = document.getElementById('btnEmoji');
+  const emojiContainer = document.getElementById('emojiContainer');
+  const nomeInput = document.getElementById('nomeNovo');
+
+  btnEmoji.addEventListener('click', () => {
+    emojiContainer.style.display = emojiContainer.style.display === 'none' ? 'flex' : 'none';
+  });
+
+  document.querySelectorAll('#emojiContainer button').forEach(button => {
+    button.addEventListener('click', () => {
+      nomeInput.value += button.textContent;
+      nomeInput.focus();
+      emojiContainer.style.display = 'none';
+    });
+  });
+});
+</script>
 </body>
+
 </html>
