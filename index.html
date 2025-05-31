@@ -1,53 +1,29 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <title>TABELA DE HORÁRIOS MODERNA</title>
 
-  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-
-  <!-- HTML2PDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
   <style>
     body { font-family: 'Arial Black', Arial, sans-serif; background: #f0f0f0; text-transform: uppercase; padding: 10px; font-size: 12px; }
     h1 { text-align: center; font-size: 20px; color: #222; }
-    .turno { border-radius: 5px; padding: 10px; margin-bottom: 10px; background: white; }
+    .turno { border-radius: 5px; padding: 10px; margin-bottom: 10px; background: white; border-left: 10px solid #333; page-break-inside: avoid; break-inside: avoid; }
     .turno h2 { font-size: 14px; font-weight: bold; }
-    .separador { border-left: 10px solid #ff7043; background-color: #ffe0b2; }
-    .donoderua { border-left: 10px solid #ffca28; background-color: #fff9c4; }
-    .checkout { border-left: 10px solid #66bb6a; background-color: #c8e6c9; }
-    .empilhadores { border-left: 10px solid #29b6f6; background-color: #b3e5fc; }
+    .separador { border-left-color: #ff7043; background-color: #ffe0b2; }
+    .donoderua { border-left-color: #ffca28; background-color: #fff9c4; }
+    .checkout { border-left-color: #66bb6a; background-color: #c8e6c9; }
+    .empilhadores { border-left-color: #29b6f6; background-color: #b3e5fc; }
     .funcionarios-container { display: flex; flex-wrap: wrap; gap: 8px; }
-    .funcionario { display: flex; align-items: center; margin-bottom: 8px; width: calc(50% - 4px); }
-    .funcionario input { 
-      padding: 4px; 
-      border-radius: 4px; 
-      border: 1px solid #ccc; 
-      flex: 1; 
-      font-size: 14px; 
-      max-length: 50; 
-      max-width: 200px;
-    }
-    .funcionario button { margin-left: 3px; background: #ccc; border: none; padding: 3px 6px; border-radius: 4px; cursor: pointer; }
-    .data-horario { 
-      text-align: center; 
-      font-weight: bold; 
-      font-size: 16px; 
-      margin-bottom: 15px; 
-      padding: 10px; 
-      background-color: #f9f9f9; 
-      border: 2px solid #ccc; 
-      border-radius: 8px;
-    }
-    .data-horario input { 
-      text-align: center; 
-      font-weight: bold; 
-      font-size: 16px; 
-      margin: 5px; 
-    }
+    .funcionario { display: flex; align-items: center; margin-bottom: 8px; width: calc(50% - 4px); flex-wrap: wrap; gap: 5px; }
+    .funcionario input { padding: 4px; border-radius: 4px; border: 1px solid #ccc; font-size: 14px; max-length: 50; max-width: 200px; }
+    .funcionario button { background: #ccc; border: none; padding: 3px 6px; border-radius: 4px; cursor: pointer; }
+    .data-horario { text-align: center; font-weight: bold; font-size: 16px; margin-bottom: 15px; padding: 10px; background-color: #f9f9f9; border: 2px solid #ccc; border-radius: 8px; }
+    .data-horario input { text-align: center; font-weight: bold; font-size: 16px; margin: 5px; }
     #controles { margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap; }
     #controles input, #controles select { padding: 8px; border-radius: 5px; border: 1px solid #ccc; }
     #controles button { background: #0288d1; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; }
@@ -83,23 +59,17 @@
 <div class="turno donoderua" id="donoderua2"><h2>DONO DE RUA - 2º TURNO</h2><div class="data-horario"><input placeholder="DATA"><input placeholder="HORÁRIO"></div><div class="funcionarios-container"></div></div>
 <div class="turno checkout" id="checkout1"><h2>CHECKOUT - 1º TURNO</h2><div class="data-horario"><input placeholder="DATA"><input placeholder="HORÁRIO"></div><div class="funcionarios-container"></div></div>
 <div class="turno checkout" id="checkout2"><h2>CHECKOUT - 2º TURNO</h2><div class="data-horario"><input placeholder="DATA"><input placeholder="HORÁRIO"></div><div class="funcionarios-container"></div></div>
-<div class="turno empilhadores" id="empilhadores"><h2>EMPILHADORES</h2><div class="data-horario"><input placeholder="DATA"><input placeholder="HORÁRIO"></div><div class="funcionarios-container"></div></div>
+<div class="turno empilhadores" id="empilhadores"><h2>EMPILHADORES</h2><div class="funcionarios-container"></div></div>
 
 <script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyAvtcqhy-bj1iOpBVcIPBjvNfYygjHSpAY",
-    authDomain: "horarios-duraes.firebaseapp.com",
-    projectId: "horarios-duraes",
-    storageBucket: "horarios-duraes.firebasestorage.app",
-    messagingSenderId: "801770957942",
-    appId: "1:801770957942:web:ce5d664d7f084281ac4357"
-  };
+  const firebaseConfig = { apiKey: "AIzaSyAvtcqhy-bj1iOpBVcIPBjvNfYygjHSpAY", authDomain: "horarios-duraes.firebaseapp.com", projectId: "horarios-duraes", storageBucket: "horarios-duraes.firebasestorage.app", messagingSenderId: "801770957942", appId: "1:801770957942:web:ce5d664d7f084281ac4357" };
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
 
-  function criarFuncionario(nome, setor, turno = 1) {
+  function criarFuncionario(nome, setor, turno = 1, data = '', horario = '') {
     const div = document.createElement('div');
     div.className = 'funcionario';
+
     const input = document.createElement('input');
     input.value = nome;
     input.setAttribute('maxlength', '50');
@@ -114,47 +84,48 @@
 
     const btnExcluir = document.createElement('button');
     btnExcluir.textContent = 'X';
-    btnExcluir.onclick = () => {
-      if (confirm('Tem certeza que deseja excluir este funcionário?')) {
-        div.remove();
-        ordenarFuncionarios(setor);
-      }
-    };
+    btnExcluir.onclick = () => { if (confirm('Tem certeza?')) { div.remove(); ordenarFuncionarios(setor); } };
 
     div.appendChild(input);
     div.appendChild(turnoSpan);
+
+    if (setor === 'empilhadores') {
+      const inputData = document.createElement('input');
+      inputData.placeholder = 'DATA';
+      inputData.className = 'input-data';
+      inputData.value = data;
+
+      const inputHorario = document.createElement('input');
+      inputHorario.placeholder = 'HORÁRIO';
+      inputHorario.className = 'input-horario';
+      inputHorario.value = horario;
+
+      div.appendChild(inputData);
+      div.appendChild(inputHorario);
+    }
+
     div.appendChild(btnTroca);
     div.appendChild(btnExcluir);
 
     const container = document.getElementById(setor).querySelector('.funcionarios-container');
     container.appendChild(div);
+
     ordenarFuncionarios(setor);
   }
 
   function adicionarFuncionario() {
     const nome = document.getElementById('nomeNovo').value.trim();
     const setor = document.getElementById('setorNovo').value;
-    if (nome) {
-      criarFuncionario(nome, setor);
-      document.getElementById('nomeNovo').value = '';
-    }
+    if (nome) { criarFuncionario(nome, setor); document.getElementById('nomeNovo').value = ''; }
   }
 
   function moverFuncionario(funcDiv, setor, turnoSpan) {
     if (setor === 'empilhadores') {
-      let turnoAtual = parseInt(turnoSpan.textContent[1]);
-      turnoAtual = turnoAtual % 3 + 1;
+      let turnoAtual = parseInt(turnoSpan.textContent[1]); turnoAtual = turnoAtual % 3 + 1;
       turnoSpan.textContent = `(${turnoAtual}º TURNO)`;
     } else {
       const parent = funcDiv.parentElement.parentElement.id;
-      let proximo = '';
-      if (parent.includes('separador')) {
-        proximo = parent === 'separador1' ? 'separador2' : 'separador1';
-      } else if (parent.includes('donoderua')) {
-        proximo = parent === 'donoderua1' ? 'donoderua2' : 'donoderua1';
-      } else if (parent.includes('checkout')) {
-        proximo = parent === 'checkout1' ? 'checkout2' : 'checkout1';
-      }
+      let proximo = parent === 'separador1' ? 'separador2' : parent === 'separador2' ? 'separador1' : parent === 'donoderua1' ? 'donoderua2' : parent === 'donoderua2' ? 'donoderua1' : parent === 'checkout1' ? 'checkout2' : 'checkout1';
       document.getElementById(proximo).querySelector('.funcionarios-container').appendChild(funcDiv);
       ordenarFuncionarios(proximo);
     }
@@ -176,27 +147,30 @@
     const logo = document.getElementById('logoPDF').cloneNode();
     logo.style.display = 'block';
     clone.insertBefore(logo, clone.firstChild);
-    html2pdf().set({
-      margin: 5,
-      filename: 'tabela_horarios_' + new Date().toISOString().slice(0, 10) + '.pdf',
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2 },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    }).from(clone).save();
+    html2pdf().set({ margin: 5, filename: 'tabela_horarios_' + new Date().toISOString().slice(0, 10) + '.pdf', image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } }).from(clone).save();
   }
 
   function salvarDados() {
     const dados = {};
     document.querySelectorAll('.turno').forEach(turno => {
       const id = turno.id;
-      const data = turno.querySelector('.data-horario input').value;
-      const horario = turno.querySelector('.data-horario input:nth-child(2)').value;
-      dados[id] = { data, horario, funcionarios: [] };
+      if (id !== 'empilhadores') {
+        const data = turno.querySelector('.data-horario input').value;
+        const horario = turno.querySelector('.data-horario input:nth-child(2)').value;
+        dados[id] = { data, horario, funcionarios: [] };
+      } else {
+        dados[id] = { funcionarios: [] };
+      }
       turno.querySelectorAll('.funcionario').forEach(f => {
         const nome = f.querySelector('input').value;
-        const turnoEmp = f.querySelector('.turno-empilhador');
-        const turnoTexto = turnoEmp ? turnoEmp.textContent : '';
-        dados[id].funcionarios.push(nome + turnoTexto);
+        const turnoEmp = f.querySelector('.turno-empilhador').textContent;
+        if (id === 'empilhadores') {
+          const data = f.querySelector('.input-data').value;
+          const horario = f.querySelector('.input-horario').value;
+          dados[id].funcionarios.push({ nome, turno: turnoEmp, data, horario });
+        } else {
+          dados[id].funcionarios.push(nome + turnoEmp);
+        }
       });
     });
     db.collection("tabela").doc("horarios").set(dados).then(() => alert("DADOS SALVOS NO FIREBASE"));
@@ -208,13 +182,20 @@
         const dados = doc.data();
         for (let setor in dados) {
           const div = document.getElementById(setor);
-          div.querySelector('.data-horario input').value = dados[setor].data;
-          div.querySelector('.data-horario input:nth-child(2)').value = dados[setor].horario;
-          dados[setor].funcionarios.forEach(nomeTurno => {
-            const [nome, turnoTexto] = nomeTurno.split('(');
-            const turnoNum = turnoTexto ? parseInt(turnoTexto[0]) : 1;
-            criarFuncionario(nome.trim(), setor, setor === 'empilhadores' ? turnoNum : 1);
-          });
+          if (setor !== 'empilhadores') {
+            div.querySelector('.data-horario input').value = dados[setor].data;
+            div.querySelector('.data-horario input:nth-child(2)').value = dados[setor].horario;
+            dados[setor].funcionarios.forEach(nomeTurno => {
+              const [nome, turnoTexto] = nomeTurno.split('(');
+              const turnoNum = turnoTexto ? parseInt(turnoTexto[0]) : 1;
+              criarFuncionario(nome.trim(), setor, turnoNum);
+            });
+          } else {
+            dados[setor].funcionarios.forEach(emp => {
+              const turnoNum = emp.turno ? parseInt(emp.turno[1]) : 1;
+              criarFuncionario(emp.nome, setor, turnoNum, emp.data, emp.horario);
+            });
+          }
         }
       }
     });
