@@ -66,7 +66,7 @@
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
 
-  function criarFuncionario(nome, setor, turno = 1, data = '', horario = '') {
+  function criarFuncionario(nome, setor, turno = 1, data = '', horario = '', horarioAlt = '') {
     const div = document.createElement('div');
     div.className = 'funcionario';
 
@@ -94,14 +94,20 @@
       inputData.placeholder = 'DATA';
       inputData.className = 'input-data';
       inputData.value = data;
-
       const inputHorario = document.createElement('input');
       inputHorario.placeholder = 'HORÁRIO';
       inputHorario.className = 'input-horario';
       inputHorario.value = horario;
-
       div.appendChild(inputData);
       div.appendChild(inputHorario);
+    }
+
+    if (setor.startsWith('checkout')) {
+      const inputHorarioAlt = document.createElement('input');
+      inputHorarioAlt.placeholder = 'HORÁRIO ALTERNATIVO';
+      inputHorarioAlt.className = 'input-horario-alt';
+      inputHorarioAlt.value = horarioAlt || '';
+      div.appendChild(inputHorarioAlt);
     }
 
     div.appendChild(btnTroca);
@@ -168,6 +174,9 @@
           const data = f.querySelector('.input-data').value;
           const horario = f.querySelector('.input-horario').value;
           dados[id].funcionarios.push({ nome, turno: turnoEmp, data, horario });
+        } else if (id.startsWith('checkout')) {
+          const horarioAlt = f.querySelector('.input-horario-alt') ? f.querySelector('.input-horario-alt').value : '';
+          dados[id].funcionarios.push({ nome, horarioAlt });
         } else {
           dados[id].funcionarios.push(nome + turnoEmp);
         }
@@ -185,10 +194,14 @@
           if (setor !== 'empilhadores') {
             div.querySelector('.data-horario input').value = dados[setor].data;
             div.querySelector('.data-horario input:nth-child(2)').value = dados[setor].horario;
-            dados[setor].funcionarios.forEach(nomeTurno => {
-              const [nome, turnoTexto] = nomeTurno.split('(');
-              const turnoNum = turnoTexto ? parseInt(turnoTexto[0]) : 1;
-              criarFuncionario(nome.trim(), setor, turnoNum);
+            dados[setor].funcionarios.forEach(f => {
+              if (typeof f === 'string') {
+                const [nome, turnoTexto] = f.split('(');
+                const turnoNum = turnoTexto ? parseInt(turnoTexto[0]) : 1;
+                criarFuncionario(nome.trim(), setor, turnoNum);
+              } else {
+                criarFuncionario(f.nome, setor, 1, '', '', f.horarioAlt);
+              }
             });
           } else {
             dados[setor].funcionarios.forEach(emp => {
