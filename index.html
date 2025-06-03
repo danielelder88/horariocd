@@ -42,18 +42,12 @@
       align-items: center;
       color: #111;
     }
-    .separador { border-left-color: #FF5722; background-color: #FFCCBC; }
-    .donoderua { border-left-color: #FFEB3B; background-color: #FFF9C4; }
-    .checkout { border-left-color: #76FF03; background-color: #DCEDC8; }
-    .empilhadores { border-left-color: #2196F3; background-color: #BBDEFB; }
-
     .funcionarios-container {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 10px;
       margin-top: 10px;
     }
-
     .funcionario {
       display: flex;
       flex-direction: column;
@@ -63,7 +57,6 @@
       border-radius: 6px;
       background: #fff;
     }
-
     .funcionario input {
       padding: 8px;
       border-radius: 5px;
@@ -72,7 +65,6 @@
       width: 100%;
       background: #fff;
     }
-
     .funcionario button {
       background: #FF9800;
       color: white;
@@ -85,7 +77,6 @@
     .funcionario button:hover {
       background: #F57C00;
     }
-
     .data-horario {
       text-align: center;
       font-weight: bold;
@@ -96,7 +87,6 @@
       border: 2px solid #ccc;
       border-radius: 6px;
     }
-
     .data-horario input {
       text-align: center;
       font-weight: bold;
@@ -106,7 +96,6 @@
       border-radius: 5px;
       border: 2px solid #888;
     }
-
     .paleta-cores {
       display: none;
       position: absolute;
@@ -117,7 +106,6 @@
       padding: 5px;
       border-radius: 5px;
     }
-
     .paleta-cores button {
       width: 20px;
       height: 20px;
@@ -125,7 +113,6 @@
       border: none;
       cursor: pointer;
     }
-
     .btn-paleta {
       position: absolute;
       top: 10px;
@@ -134,7 +121,6 @@
       border: none;
       cursor: pointer;
     }
-
     #controles {
       margin-bottom: 20px;
       display: flex;
@@ -159,7 +145,6 @@
     #controles button:hover {
       background: #0277bd;
     }
-
     #logoPDF { display: none; }
     .turno-empilhador { font-size: 10px; margin-left: 5px; color: #555; }
   </style>
@@ -187,24 +172,30 @@
   <button aria-label="Gerar PDF" onclick="gerarPDF()">PDF</button>
   <button aria-label="Salvar dados" onclick="salvarDados()">SALVAR</button>
 </div>
-
 <div class="turno separador" id="separador1">
   <button class="btn-paleta" onclick="togglePaleta(this)">🎨</button>
   <div class="paleta-cores">
     <button style="background:#FFCCBC" onclick="mudarCor(this, 'separador1')"></button>
     <button style="background:#E1BEE7" onclick="mudarCor(this, 'separador1')"></button>
     <button style="background:#B2DFDB" onclick="mudarCor(this, 'separador1')"></button>
+    <button style="background:#F8BBD0" onclick="mudarCor(this, 'separador1')"></button>
+    <button style="background:#D1C4E9" onclick="mudarCor(this, 'separador1')"></button>
+    <button style="background:#C5CAE9" onclick="mudarCor(this, 'separador1')"></button>
   </div>
   <h2>SEPARADOR - 1º TURNO <span class="contador">(0)</span></h2>
   <div class="data-horario"><input placeholder="DATA"><input placeholder="HORÁRIO"></div>
   <div class="funcionarios-container"></div>
 </div>
+
 <div class="turno separador" id="separador2">
   <button class="btn-paleta" onclick="togglePaleta(this)">🎨</button>
   <div class="paleta-cores">
     <button style="background:#FFCCBC" onclick="mudarCor(this, 'separador2')"></button>
     <button style="background:#E1BEE7" onclick="mudarCor(this, 'separador2')"></button>
     <button style="background:#B2DFDB" onclick="mudarCor(this, 'separador2')"></button>
+    <button style="background:#F8BBD0" onclick="mudarCor(this, 'separador2')"></button>
+    <button style="background:#D1C4E9" onclick="mudarCor(this, 'separador2')"></button>
+    <button style="background:#C5CAE9" onclick="mudarCor(this, 'separador2')"></button>
   </div>
   <h2>SEPARADOR - 2º TURNO <span class="contador">(0)</span></h2>
   <div class="data-horario"><input placeholder="DATA"><input placeholder="HORÁRIO"></div>
@@ -217,6 +208,9 @@
     <button style="background:#FFF9C4" onclick="mudarCor(this, 'donoderua1')"></button>
     <button style="background:#FFECB3" onclick="mudarCor(this, 'donoderua1')"></button>
     <button style="background:#FFE0B2" onclick="mudarCor(this, 'donoderua1')"></button>
+    <button style="background:#FFCDD2" onclick="mudarCor(this, 'donoderua1')"></button>
+    <button style="background:#F8BBD0" onclick="mudarCor(this, 'donoderua1')"></button>
+    <button style="background:#E1BEE7" onclick="mudarCor(this, 'donoderua1')"></button>
   </div>
   <h2>DONO DE RUA - 1º TURNO <span class="contador">(0)</span></h2>
   <div class="data-horario"><input placeholder="DATA"><input placeholder="HORÁRIO"></div>
@@ -229,6 +223,9 @@
     <button style="background:#FFF9C4" onclick="mudarCor(this, 'donoderua2')"></button>
     <button style="background:#FFECB3" onclick="mudarCor(this, 'donoderua2')"></button>
     <button style="background:#FFE0B2" onclick="mudarCor(this, 'donoderua2')"></button>
+    <button style="background:#FFCDD2" onclick="mudarCor(this, 'donoderua2')"></button>
+    <button style="background:#F8BBD0" onclick="mudarCor(this, 'donoderua2')"></button>
+    <button style="background:#E1BEE7" onclick="mudarCor(this, 'donoderua2')"></button>
   </div>
   <h2>DONO DE RUA - 2º TURNO <span class="contador">(0)</span></h2>
   <div class="data-horario"><input placeholder="DATA"><input placeholder="HORÁRIO"></div>
@@ -241,6 +238,9 @@
     <button style="background:#DCEDC8" onclick="mudarCor(this, 'checkout1')"></button>
     <button style="background:#C8E6C9" onclick="mudarCor(this, 'checkout1')"></button>
     <button style="background:#A5D6A7" onclick="mudarCor(this, 'checkout1')"></button>
+    <button style="background:#81C784" onclick="mudarCor(this, 'checkout1')"></button>
+    <button style="background:#66BB6A" onclick="mudarCor(this, 'checkout1')"></button>
+    <button style="background:#4CAF50" onclick="mudarCor(this, 'checkout1')"></button>
   </div>
   <h2>CHECKOUT - 1º TURNO <span class="contador">(0)</span></h2>
   <div class="data-horario"><input placeholder="DATA"><input placeholder="HORÁRIO"></div>
@@ -253,6 +253,9 @@
     <button style="background:#DCEDC8" onclick="mudarCor(this, 'checkout2')"></button>
     <button style="background:#C8E6C9" onclick="mudarCor(this, 'checkout2')"></button>
     <button style="background:#A5D6A7" onclick="mudarCor(this, 'checkout2')"></button>
+    <button style="background:#81C784" onclick="mudarCor(this, 'checkout2')"></button>
+    <button style="background:#66BB6A" onclick="mudarCor(this, 'checkout2')"></button>
+    <button style="background:#4CAF50" onclick="mudarCor(this, 'checkout2')"></button>
   </div>
   <h2>CHECKOUT - 2º TURNO <span class="contador">(0)</span></h2>
   <div class="data-horario"><input placeholder="DATA"><input placeholder="HORÁRIO"></div>
@@ -265,6 +268,9 @@
     <button style="background:#BBDEFB" onclick="mudarCor(this, 'empilhadores')"></button>
     <button style="background:#90CAF9" onclick="mudarCor(this, 'empilhadores')"></button>
     <button style="background:#64B5F6" onclick="mudarCor(this, 'empilhadores')"></button>
+    <button style="background:#42A5F5" onclick="mudarCor(this, 'empilhadores')"></button>
+    <button style="background:#2196F3" onclick="mudarCor(this, 'empilhadores')"></button>
+    <button style="background:#1E88E5" onclick="mudarCor(this, 'empilhadores')"></button>
   </div>
   <h2>EMPILHADORES <span class="contador">(0)</span></h2>
   <div class="funcionarios-container"></div>
