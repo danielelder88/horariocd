@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -10,72 +9,161 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
   <style>
-    body { font-family: 'Arial Black', Arial, sans-serif; background: #f0f0f0; text-transform: uppercase; padding: 10px; font-size: 12px; }
+    body {
+      font-family: 'Arial Black', Arial, sans-serif;
+      background: #f0f0f0;
+      text-transform: uppercase;
+      padding: 10px;
+      font-size: 12px;
+    }
     h1 { text-align: center; font-size: 20px; color: #222; }
-    .turno { border-radius: 5px; padding: 10px; margin-bottom: 10px; background: white; border-left: 10px solid #333; page-break-inside: avoid; break-inside: avoid; }
+    .turno {
+      border-radius: 5px;
+      padding: 10px;
+      margin-bottom: 10px;
+      background: white;
+      border-left: 10px solid #333;
+      page-break-inside: avoid;
+      break-inside: avoid;
+      max-width: 800px;
+      margin: auto;
+    }
     .turno h2 { font-size: 14px; font-weight: bold; }
     .separador { border-left-color: #ff7043; background-color: #ffe0b2; }
     .donoderua { border-left-color: #ffca28; background-color: #fff9c4; }
     .checkout { border-left-color: #66bb6a; background-color: #c8e6c9; }
     .empilhadores { border-left-color: #29b6f6; background-color: #b3e5fc; }
-    .funcionarios-container { display: flex; flex-wrap: wrap; gap: 8px; }
-    .funcionario { display: flex; align-items: center; margin-bottom: 8px; width: calc(50% - 4px); flex-wrap: wrap; gap: 5px; }
-    .funcionario input { padding: 4px; border-radius: 4px; border: 1px solid #ccc; font-size: 14px; max-length: 50; max-width: 200px; }
-    .funcionario button { background: #ccc; border: none; padding: 3px 6px; border-radius: 4px; cursor: pointer; }
-    .data-horario { text-align: center; font-weight: bold; font-size: 16px; margin-bottom: 15px; padding: 10px; background-color: #f9f9f9; border: 2px solid #ccc; border-radius: 8px; }
-    .data-horario input { text-align: center; font-weight: bold; font-size: 16px; margin: 5px; }
-    #controles { margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap; }
-    #controles input, #controles select { padding: 8px; border-radius: 5px; border: 1px solid #ccc; }
-    #controles button { background: #0288d1; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; }
+
+    .funcionarios-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+    }
+
+    .funcionario {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 5px;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      background: #fff;
+      box-shadow: 1px 1px 5px rgba(0,0,0,0.1);
+    }
+
+    .funcionario input {
+      padding: 8px;
+      border-radius: 8px;
+      border: 2px solid #888;
+      font-size: 14px;
+      max-width: 100%;
+      box-shadow: 2px 2px 6px rgba(0,0,0,0.15);
+      background-color: #fff;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .funcionario input:focus {
+      transform: scale(1.02);
+      box-shadow: 3px 3px 8px rgba(0,0,0,0.25);
+      border-color: #555;
+    }
+    .funcionario button {
+      background: #ccc;
+      border: none;
+      padding: 3px 6px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .data-horario {
+      text-align: center;
+      font-weight: bold;
+      font-size: 16px;
+      margin-bottom: 15px;
+      padding: 10px;
+      background-color: #f9f9f9;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+    }
+    .data-horario input {
+      text-align: center;
+      font-weight: bold;
+      font-size: 16px;
+      margin: 5px;
+    }
+    #controles {
+      margin-bottom: 20px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    #controles input, #controles select {
+      padding: 8px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    #controles button {
+      background: #0288d1;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
     #logoPDF { display: none; }
     .turno-empilhador { font-size: 10px; margin-left: 5px; color: #555; }
+    .input-separador { background-color: rgba(255, 224, 178, 0.4); }
+    .input-donoderua { background-color: rgba(255, 249, 196, 0.4); }
+    .input-checkout { background-color: rgba(200, 230, 201, 0.4); }
+    .input-empilhadores { background-color: rgba(179, 229, 252, 0.4); }
   </style>
 </head>
+
 <body>
 
-<img id="logoPDF" src="LOGO_DURÃES_VETORIZADA.png" alt="LOGO DURÃES" width="200">
+  <img id="logoPDF" src="LOGO_DURÃES_VETORIZADA.png" alt="LOGO DURÃES" width="200">
+  <h1>TABELA DE HORÁRIOS</h1>
 
-<h1>TABELA DE HORÁRIOS</h1>
+  <div id="controles">
+    <input type="text" id="nomeNovo" placeholder="NOME">
+    <button type="button" id="btnEmoji">➕ Emojis</button>
+    <div id="emojiContainer" style="display: none; position: absolute; background: #fff; border: 1px solid #ccc; border-radius: 5px; padding: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 10; max-width: 200px; flex-wrap: wrap; gap: 5px;">
+      <button type="button">😀</button>
+      <button type="button">😁</button>
+      <button type="button">😂</button>
+      <button type="button">🎁</button>
+    </div>
 
-<div id="controles">
-  
-<div style="display: flex; align-items: center; gap: 10px; position: relative;">
-  <input type="text" id="nomeNovo" placeholder="NOME">
-  <button type="button" id="btnEmoji" style="background: none; border: none; cursor: pointer; font-size: 18px;">➕ Emojis</button>
-  <div id="emojiContainer" style="display: none; position: absolute; top: 100%; left: 0; background: #fff; border: 1px solid #ccc; border-radius: 5px; padding: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 10; max-width: 200px; flex-wrap: wrap; gap: 5px;">
-    <button type="button">😀</button><button type="button">😁</button><button type="button">😂</button><button type="button">🤣</button><button type="button">😎</button>
-    <button type="button">😍</button><button type="button">🥰</button><button type="button">😡</button><button type="button">😢</button><button type="button">😱</button>
-    <button type="button">🤯</button><button type="button">🙏</button><button type="button">👊</button><button type="button">👍</button><button type="button">👎</button>
-    <button type="button">✌️</button><button type="button">🤟</button><button type="button">👏</button><button type="button">💪</button><button type="button">🚀</button>
-    <button type="button">⚡</button><button type="button">🔥</button><button type="button">🌟</button><button type="button">🎯</button><button type="button">🏆</button>
-    <button type="button">🛠️</button><button type="button">🎨</button><button type="button">💼</button><button type="button">🏅</button><button type="button">🎁</button>
+    <select id="setorNovo">
+      <option value="separador1">SEPARADOR 1º TURNO</option>
+      <option value="separador2">SEPARADOR 2º TURNO</option>
+      <option value="donoderua1">DONO DE RUA 1º TURNO</option>
+      <option value="donoderua2">DONO DE RUA 2º TURNO</option>
+      <option value="checkout1">CHECKOUT 1º TURNO</option>
+      <option value="checkout2">CHECKOUT 2º TURNO</option>
+      <option value="empilhadores">EMPILHADORES</option>
+    </select>
+
+    <button onclick="adicionarFuncionario()">ADICIONAR</button>
+    <button onclick="gerarPDF()">PDF</button>
+    <button onclick="salvarDados()">SALVAR</button>
   </div>
-</div>
 
-  <select id="setorNovo">
-    <option value="separador1">SEPARADOR 1º TURNO</option>
-    <option value="separador2">SEPARADOR 2º TURNO</option>
-    <option value="donoderua1">DONO DE RUA 1º TURNO</option>
-    <option value="donoderua2">DONO DE RUA 2º TURNO</option>
-    <option value="checkout1">CHECKOUT 1º TURNO</option>
-    <option value="checkout2">CHECKOUT 2º TURNO</option>
-    <option value="empilhadores">EMPILHADORES</option>
-  </select>
-  <button onclick="adicionarFuncionario()">ADICIONAR</button>
-  <button onclick="gerarPDF()">PDF</button>
-  <button onclick="salvarDados()">SALVAR</button>
-</div>
-
-<div class="turno separador" id="separador1"><h2>SEPARADOR - 1º TURNO</h2><div class="data-horario"><input placeholder="DATA"><input placeholder="HORÁRIO"></div><div class="funcionarios-container"></div></div>
-<div class="turno separador" id="separador2"><h2>SEPARADOR - 2º TURNO</h2><div class="data-horario"><input placeholder="DATA"><input placeholder="HORÁRIO"></div><div class="funcionarios-container"></div></div>
-<div class="turno donoderua" id="donoderua1"><h2>DONO DE RUA - 1º TURNO</h2><div class="data-horario"><input placeholder="DATA"><input placeholder="HORÁRIO"></div><div class="funcionarios-container"></div></div>
-<div class="turno donoderua" id="donoderua2"><h2>DONO DE RUA - 2º TURNO</h2><div class="data-horario"><input placeholder="DATA"><input placeholder="HORÁRIO"></div><div class="funcionarios-container"></div></div>
-<div class="turno checkout" id="checkout1"><h2>CHECKOUT - 1º TURNO</h2><div class="data-horario"><input placeholder="DATA"><input placeholder="HORÁRIO"></div><div class="funcionarios-container"></div></div>
-<div class="turno checkout" id="checkout2"><h2>CHECKOUT - 2º TURNO</h2><div class="data-horario"><input placeholder="DATA"><input placeholder="HORÁRIO"></div><div class="funcionarios-container"></div></div>
-<div class="turno empilhadores" id="empilhadores"><h2>EMPILHADORES</h2><div class="funcionarios-container"></div></div>
-
+  <div class="turno separador" id="separador1"><h2>SEPARADOR - 1º TURNO</h2><div class="data-horario"><input placeholder="DATA"><input placeholder="HORÁRIO"></div><div class="funcionarios-container"></div></div>
+  <div class="turno separador" id="separador2"><h2>SEPARADOR - 2º TURNO</h2><div class="data-horario"><input placeholder="DATA"><input placeholder="HORÁRIO"></div><div class="funcionarios-container"></div></div>
+  <div class="turno donoderua" id="donoderua1"><h2>DONO DE RUA - 1º TURNO</h2><div class="data-horario"><input placeholder="DATA"><input placeholder="HORÁRIO"></div><div class="funcionarios-container"></div></div>
+  <div class="turno donoderua" id="donoderua2"><h2>DONO DE RUA - 2º TURNO</h2><div class="data-horario"><input placeholder="DATA"><input placeholder="HORÁRIO"></div><div class="funcionarios-container"></div></div>
+  <div class="turno checkout" id="checkout1"><h2>CHECKOUT - 1º TURNO</h2><div class="data-horario"><input placeholder="DATA"><input placeholder="HORÁRIO"></div><div class="funcionarios-container"></div></div>
+  <div class="turno checkout" id="checkout2"><h2>CHECKOUT - 2º TURNO</h2><div class="data-horario"><input placeholder="DATA"><input placeholder="HORÁRIO"></div><div class="funcionarios-container"></div></div>
+  <div class="turno empilhadores" id="empilhadores"><h2>EMPILHADORES</h2><div class="funcionarios-container"></div></div>
 <script>
-  const firebaseConfig = { apiKey: "AIzaSyAvtcqhy-bj1iOpBVcIPBjvNfYygjHSpAY", authDomain: "horarios-duraes.firebaseapp.com", projectId: "horarios-duraes", storageBucket: "horarios-duraes.firebasestorage.app", messagingSenderId: "801770957942", appId: "1:801770957942:web:ce5d664d7f084281ac4357" };
+  const firebaseConfig = {
+    apiKey: "AIzaSyAvtcqhy-bj1iOpBVcIPBjvNfYygjHSpAY",
+    authDomain: "horarios-duraes.firebaseapp.com",
+    projectId: "horarios-duraes",
+    storageBucket: "horarios-duraes.firebasestorage.app",
+    messagingSenderId: "801770957942",
+    appId: "1:801770957942:web:ce5d664d7f084281ac4357"
+  };
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
 
@@ -87,6 +175,14 @@
     input.value = nome;
     input.setAttribute('maxlength', '50');
 
+    let inputClass = '';
+    if (setor.startsWith('separador')) inputClass = 'input-separador';
+    else if (setor.startsWith('donoderua')) inputClass = 'input-donoderua';
+    else if (setor.startsWith('checkout')) inputClass = 'input-checkout';
+    else if (setor === 'empilhadores') inputClass = 'input-empilhadores';
+
+    input.classList.add(inputClass);
+
     const turnoSpan = document.createElement('span');
     turnoSpan.className = 'turno-empilhador';
     turnoSpan.textContent = setor === 'empilhadores' ? `(${turno}º TURNO)` : '';
@@ -97,7 +193,12 @@
 
     const btnExcluir = document.createElement('button');
     btnExcluir.textContent = 'X';
-    btnExcluir.onclick = () => { if (confirm('Tem certeza?')) { div.remove(); ordenarFuncionarios(setor); } };
+    btnExcluir.onclick = () => {
+      if (confirm('Tem certeza?')) {
+        div.remove();
+        ordenarFuncionarios(setor);
+      }
+    };
 
     div.appendChild(input);
     div.appendChild(turnoSpan);
@@ -107,10 +208,14 @@
       inputData.placeholder = 'DATA';
       inputData.className = 'input-data';
       inputData.value = data;
+      inputData.classList.add(inputClass);
+
       const inputHorario = document.createElement('input');
       inputHorario.placeholder = 'HORÁRIO';
       inputHorario.className = 'input-horario';
       inputHorario.value = horario;
+      inputHorario.classList.add(inputClass);
+
       div.appendChild(inputData);
       div.appendChild(inputHorario);
     }
@@ -120,6 +225,7 @@
       inputHorarioAlt.placeholder = 'HORÁRIO ALTERNATIVO';
       inputHorarioAlt.className = 'input-horario-alt';
       inputHorarioAlt.value = horarioAlt || '';
+      inputHorarioAlt.classList.add(inputClass);
       div.appendChild(inputHorarioAlt);
     }
 
@@ -135,26 +241,40 @@
   function adicionarFuncionario() {
     const nome = document.getElementById('nomeNovo').value.trim();
     const setor = document.getElementById('setorNovo').value;
-    if (nome) { criarFuncionario(nome, setor); document.getElementById('nomeNovo').value = ''; }
+
+    if (nome) {
+      criarFuncionario(nome, setor);
+      document.getElementById('nomeNovo').value = '';
+    }
   }
 
   function moverFuncionario(funcDiv, setor, turnoSpan) {
     if (setor === 'empilhadores') {
-      let turnoAtual = parseInt(turnoSpan.textContent[1]); turnoAtual = turnoAtual % 3 + 1;
+      let turnoAtual = parseInt(turnoSpan.textContent[1]);
+      turnoAtual = turnoAtual % 3 + 1;
       turnoSpan.textContent = `(${turnoAtual}º TURNO)`;
+      ordenarFuncionarios(setor);
     } else {
       const parent = funcDiv.parentElement.parentElement.id;
-      let proximo = parent === 'separador1' ? 'separador2' : parent === 'separador2' ? 'separador1' : parent === 'donoderua1' ? 'donoderua2' : parent === 'donoderua2' ? 'donoderua1' : parent === 'checkout1' ? 'checkout2' : 'checkout1';
+      let proximo = parent === 'separador1' ? 'separador2' :
+                    parent === 'separador2' ? 'separador1' :
+                    parent === 'donoderua1' ? 'donoderua2' :
+                    parent === 'donoderua2' ? 'donoderua1' :
+                    parent === 'checkout1' ? 'checkout2' : 'checkout1';
+
       document.getElementById(proximo).querySelector('.funcionarios-container').appendChild(funcDiv);
       ordenarFuncionarios(proximo);
     }
-    if (setor === 'empilhadores') ordenarFuncionarios(setor);
   }
 
   function ordenarFuncionarios(setor) {
     const container = document.getElementById(setor).querySelector('.funcionarios-container');
     const funcionarios = Array.from(container.querySelectorAll('.funcionario'));
-    funcionarios.sort((a, b) => a.querySelector('input').value.localeCompare(b.querySelector('input').value));
+
+    funcionarios.sort((a, b) =>
+      a.querySelector('input').value.localeCompare(b.querySelector('input').value)
+    );
+
     funcionarios.forEach(f => container.appendChild(f));
   }
 
@@ -163,29 +283,35 @@
     clone.querySelector('#controles').remove();
     clone.querySelectorAll('.funcionario button').forEach(btn => btn.remove());
     clone.querySelectorAll('.turno-empilhador').forEach(span => span.remove());
-    
-    
 
-clone.querySelectorAll('.input-horario-alt').forEach(input => {
-  if (input.value.trim() === '') {
-    input.remove();
-  } else {
-    const nomeInput = input.parentNode.querySelector('input');
-    const span = document.createElement('span');
-    span.innerHTML = '<span style="display: inline-block; margin-left: 5px; padding: 2px 4px; border: 1px solid red; background: #ffe5e5; color: red; font-weight: bold;">' 
-      + input.value.trim() + '</span>';
-    nomeInput.parentNode.insertBefore(span, nomeInput.nextSibling);
-    input.remove();
-  }
-});
-const logo = document.getElementById('logoPDF').cloneNode();
+    clone.querySelectorAll('.input-horario-alt').forEach(input => {
+      if (input.value.trim() === '') {
+        input.remove();
+      } else {
+        const nomeInput = input.parentNode.querySelector('input');
+        const span = document.createElement('span');
+        span.innerHTML = `<span style="display: inline-block; margin-left: 5px; padding: 2px 4px; border: 1px solid red; background: #ffe5e5; color: red; font-weight: bold;">${input.value.trim()}</span>`;
+        nomeInput.parentNode.insertBefore(span, nomeInput.nextSibling);
+        input.remove();
+      }
+    });
+
+    const logo = document.getElementById('logoPDF').cloneNode();
     logo.style.display = 'block';
     clone.insertBefore(logo, clone.firstChild);
-    html2pdf().set({ margin: 5, filename: 'tabela_horarios_' + new Date().toISOString().slice(0, 10) + '.pdf', image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } }).from(clone).save();
+
+    html2pdf().set({
+      margin: 5,
+      filename: 'tabela_horarios_' + new Date().toISOString().slice(0, 10) + '.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    }).from(clone).save();
   }
 
   function salvarDados() {
     const dados = {};
+
     document.querySelectorAll('.turno').forEach(turno => {
       const id = turno.id;
       if (id !== 'empilhadores') {
@@ -195,9 +321,11 @@ const logo = document.getElementById('logoPDF').cloneNode();
       } else {
         dados[id] = { funcionarios: [] };
       }
+
       turno.querySelectorAll('.funcionario').forEach(f => {
         const nome = f.querySelector('input').value;
-        const turnoEmp = f.querySelector('.turno-empilhador').textContent;
+        const turnoEmp = f.querySelector('.turno-empilhador')?.textContent;
+
         if (id === 'empilhadores') {
           const data = f.querySelector('.input-data').value;
           const horario = f.querySelector('.input-horario').value;
@@ -206,10 +334,11 @@ const logo = document.getElementById('logoPDF').cloneNode();
           const horarioAlt = f.querySelector('.input-horario-alt') ? f.querySelector('.input-horario-alt').value : '';
           dados[id].funcionarios.push({ nome, horarioAlt });
         } else {
-          dados[id].funcionarios.push(nome + turnoEmp);
+          dados[id].funcionarios.push(nome + (turnoEmp || ''));
         }
       });
     });
+
     db.collection("tabela").doc("horarios").set(dados).then(() => alert("DADOS SALVOS NO FIREBASE"));
   }
 
@@ -222,6 +351,7 @@ const logo = document.getElementById('logoPDF').cloneNode();
           if (setor !== 'empilhadores') {
             div.querySelector('.data-horario input').value = dados[setor].data;
             div.querySelector('.data-horario input:nth-child(2)').value = dados[setor].horario;
+
             dados[setor].funcionarios.forEach(f => {
               if (typeof f === 'string') {
                 const [nome, turnoTexto] = f.split('(');
@@ -241,28 +371,24 @@ const logo = document.getElementById('logoPDF').cloneNode();
       }
     });
   }
-</script>
 
+  document.addEventListener('DOMContentLoaded', () => {
+    const btnEmoji = document.getElementById('btnEmoji');
+    const emojiContainer = document.getElementById('emojiContainer');
+    const nomeInput = document.getElementById('nomeNovo');
 
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  const btnEmoji = document.getElementById('btnEmoji');
-  const emojiContainer = document.getElementById('emojiContainer');
-  const nomeInput = document.getElementById('nomeNovo');
+    btnEmoji.addEventListener('click', () => {
+      emojiContainer.style.display = emojiContainer.style.display === 'none' ? 'flex' : 'none';
+    });
 
-  btnEmoji.addEventListener('click', () => {
-    emojiContainer.style.display = emojiContainer.style.display === 'none' ? 'flex' : 'none';
-  });
-
-  document.querySelectorAll('#emojiContainer button').forEach(button => {
-    button.addEventListener('click', () => {
-      nomeInput.value += button.textContent;
-      nomeInput.focus();
-      emojiContainer.style.display = 'none';
+    document.querySelectorAll('#emojiContainer button').forEach(button => {
+      button.addEventListener('click', () => {
+        nomeInput.value += button.textContent;
+        nomeInput.focus();
+        emojiContainer.style.display = 'none';
+      });
     });
   });
-});
 </script>
 </body>
-
 </html>
