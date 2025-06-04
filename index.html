@@ -312,23 +312,31 @@
     input.value = nome;
     input.setAttribute('maxlength', '50');
 
-    if (setor === 'empilhadores') {
-      const turnoSpan = document.createElement('span');
-      turnoSpan.className = 'turno-empilhador';
-      turnoSpan.textContent = `(${turno}º TURNO)`;
-      div.appendChild(turnoSpan);
+  if (setor === 'empilhadores') {
+  // Select de turno
+  const selectTurno = document.createElement('select');
+  selectTurno.className = 'turno-empilhador';
+  [1, 2, 3].forEach(n => {
+    const option = document.createElement('option');
+    option.value = n;
+    option.textContent = `${n}º TURNO`;
+    if (n == turno) option.selected = true;
+    selectTurno.appendChild(option);
+  });
+  div.appendChild(selectTurno);
 
-      const inputData = document.createElement('input');
-      inputData.placeholder = 'DATA';
-      inputData.value = data;
+  // Campos de data e horário
+  const inputData = document.createElement('input');
+  inputData.placeholder = 'DATA';
+  inputData.value = data;
 
-      const inputHorario = document.createElement('input');
-      inputHorario.placeholder = 'HORÁRIO';
-      inputHorario.value = horario;
+  const inputHorario = document.createElement('input');
+  inputHorario.placeholder = 'HORÁRIO';
+  inputHorario.value = horario;
 
-      div.appendChild(inputData);
-      div.appendChild(inputHorario);
-    }
+  div.appendChild(inputData);
+  div.appendChild(inputHorario);
+}
 
     const btnTroca = document.createElement('button');
     btnTroca.textContent = '⇄';
@@ -419,9 +427,18 @@
       dados[id] = { data, horario, funcionarios: [] };
 
       turno.querySelectorAll('.funcionario').forEach(f => {
-        const nome = f.querySelector('input').value;
-        dados[id].funcionarios.push(nome);
-      });
+  const nome = f.querySelector('input').value;
+
+  if (id === 'empilhadores') {
+    const turnoSelecionado = f.querySelector('select')?.value || '1';
+    const data = f.querySelectorAll('input')[1]?.value || '';
+    const horario = f.querySelectorAll('input')[2]?.value || '';
+
+    dados[id].funcionarios.push({ nome, turno: turnoSelecionado, data, horario });
+  } else {
+    dados[id].funcionarios.push(nome);
+  }
+});
     });
 
     db.collection("tabela").doc("horarios").set(dados).then(() => alert("DADOS SALVOS NO FIREBASE"));
@@ -436,9 +453,14 @@
           div.querySelector('.data-horario input').value = dados[setor].data;
           div.querySelector('.data-horario input:nth-child(2)').value = dados[setor].horario;
 
-          dados[setor].funcionarios.forEach(nome => {
-            criarFuncionario(nome, setor);
-          });
+          dados[setor].funcionarios.forEach(info => {
+  if (setor === 'empilhadores') {
+    const { nome, turno, data, horario } = info;
+    criarFuncionario(nome, setor, parseInt(turno), data, horario);
+  } else {
+    criarFuncionario(info, setor);
+  }
+});
         }
       }
     });
