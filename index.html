@@ -422,8 +422,9 @@
 
     document.querySelectorAll('.turno').forEach(turno => {
       const id = turno.id;
-      const data = turno.querySelector('.data-horario input')?.value || '';
-      const horario = turno.querySelector('.data-horario input:nth-child(2)')?.value || '';
+      const inputs = turno.querySelectorAll('.data-horario input');
+const data = inputs[0]?.value || '';
+const horario = inputs[1]?.value || '';
       dados[id] = { data, horario, funcionarios: [] };
 
       turno.querySelectorAll('.funcionario').forEach(f => {
