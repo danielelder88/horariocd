@@ -451,8 +451,9 @@ const horario = inputs[1]?.value || '';
         const dados = doc.data();
         for (let setor in dados) {
           const div = document.getElementById(setor);
-          div.querySelector('.data-horario input').value = dados[setor].data;
-          div.querySelector('.data-horario input:nth-child(2)').value = dados[setor].horario;
+          const inputs = div.querySelectorAll('.data-horario input');
+          if (inputs.length > 0) inputs[0].value = dados[setor].data || '';
+          if (inputs.length > 1) inputs[1].value = dados[setor].horario || '';
 
           dados[setor].funcionarios.forEach(info => {
   if (setor === 'empilhadores') {
@@ -472,6 +473,9 @@ const horario = inputs[1]?.value || '';
     const emojiContainer = document.createElement('div');
     emojiContainer.style.display = 'none';
     emojiContainer.style.position = 'absolute';
+    const inputRect = document.getElementById('nomeNovo').getBoundingClientRect();
+    emojiContainer.style.left = `${inputRect.left}px`;
+    emojiContainer.style.top = `${inputRect.bottom + window.scrollY}px`;
     emojiContainer.innerHTML = '<button>😀</button><button>😁</button><button>😂</button>';
 
     document.body.appendChild(emojiContainer);
