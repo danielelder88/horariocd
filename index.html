@@ -180,6 +180,10 @@
 <option value="checkout1">CHECKOUT 1º TURNO</option>
 <option value="checkout2">CHECKOUT 2º TURNO</option>
 <option value="empilhadores">EMPILHADORES</option>
+
+<option value="expedicao1">EXPEDIÇÃO 1º TURNO</option>
+<option value="expedicao2">EXPEDIÇÃO 2º TURNO</option>
+
 </select>
 <button aria-label="Adicionar funcionário" onclick="adicionarFuncionario()">ADICIONAR</button>
 <button aria-label="Gerar PDF" onclick="gerarPDF()">PDF</button>
@@ -269,6 +273,37 @@
 <div class="data-horario"><input placeholder="DATA"/><input placeholder="HORÁRIO"/></div>
 <div class="funcionarios-container"></div>
 </div>
+
+<div class="turno expedicao" id="expedicao1">
+  <button class="btn-paleta" onclick="togglePaleta(this)">🎨</button>
+  <div class="paleta-cores">
+    <button onclick="mudarCor(this, 'expedicao1')" style="background:#FFE082"></button>
+    <button onclick="mudarCor(this, 'expedicao1')" style="background:#FFCC80"></button>
+    <button onclick="mudarCor(this, 'expedicao1')" style="background:#FFD54F"></button>
+    <button onclick="mudarCor(this, 'expedicao1')" style="background:#FFB74D"></button>
+    <button onclick="mudarCor(this, 'expedicao1')" style="background:#FF9800"></button>
+    <button onclick="mudarCor(this, 'expedicao1')" style="background:#FB8C00"></button>
+  </div>
+  <h2>EXPEDIÇÃO - 1º TURNO <span class="contador">(0)</span></h2>
+  <div class="data-horario"><input placeholder="DATA"/><input placeholder="HORÁRIO"/></div>
+  <div class="funcionarios-container"></div>
+</div>
+
+<div class="turno expedicao" id="expedicao2">
+  <button class="btn-paleta" onclick="togglePaleta(this)">🎨</button>
+  <div class="paleta-cores">
+    <button onclick="mudarCor(this, 'expedicao2')" style="background:#FFE082"></button>
+    <button onclick="mudarCor(this, 'expedicao2')" style="background:#FFCC80"></button>
+    <button onclick="mudarCor(this, 'expedicao2')" style="background:#FFD54F"></button>
+    <button onclick="mudarCor(this, 'expedicao2')" style="background:#FFB74D"></button>
+    <button onclick="mudarCor(this, 'expedicao2')" style="background:#FF9800"></button>
+    <button onclick="mudarCor(this, 'expedicao2')" style="background:#FB8C00"></button>
+  </div>
+  <h2>EXPEDIÇÃO - 2º TURNO <span class="contador">(0)</span></h2>
+  <div class="data-horario"><input placeholder="DATA"/><input placeholder="HORÁRIO"/></div>
+  <div class="funcionarios-container"></div>
+</div>
+
 <div class="turno empilhadores" id="empilhadores">
 <button class="btn-paleta" onclick="togglePaleta(this)">🎨</button>
 <div class="paleta-cores">
